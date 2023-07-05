@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -13,11 +12,14 @@ import Geolocation from '@react-native-community/geolocation';
 import HomeScreen from './components/HomeScreen.js';
 import QRCodeScannerComp from './components/QRCodeScannerComp.js';
 import SplashScreen from 'react-native-splash-screen';
-
+import WifiList from './components/WifiList.js';
+import AboutScreen from './components/AboutScreen.js';
+import Contact from './components/Contact.js';
 const App = () => {
   const [scanned, setScanned] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [ipAddress, setIpAddress] = useState('');
+  const [password, setPassword] = useState('');
   const [showWebView, setShowWebView] = useState(false);
   const [currentSSID, setCurrentSSID] = useState('unknown');
   const [webViewError, setWebViewError] = useState(true);
@@ -25,6 +27,9 @@ const App = () => {
   const [isLocationEnabled, setisLocationEnabled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [wifiList, setWifiList] = useState(false);
+  const [home, setHome] = useState(false);
+  const [about, setAbout] = useState(false);
 
   const permission = async () => {
     try {
@@ -137,6 +142,21 @@ const App = () => {
     setScanned(false);
   };
 
+  const toggleWifiList = () => {
+    setWifiList(!wifiList);
+    setIsCameraOpen(false);
+  };
+
+  const toggleHome = () => {
+    setHome(!home);
+    setIsCameraOpen(false);
+  };
+
+  const toggleAbout = () => {
+    setAbout(!about);
+    setIsCameraOpen(false);
+  };
+
   const handleWebViewError = () => {
     setWebViewError(!webViewError);
   };
@@ -163,10 +183,16 @@ const App = () => {
         />
       ) : isCameraOpen ? (
         <>
-          <QRCodeScannerComp isLocationEnabled={isLocationEnabled} isWifiEnabled={isWifiEnabled} setIsLoading={setIsLoading} setIpAddress={setIpAddress} showWebView = {showWebView} setShowWebView={setShowWebView} toggleCamera={toggleCamera} scanned={scanned} setScanned={setScanned} checkLocationStatus={checkLocationStatus} checkWifiStatus={checkWifiStatus} isConnected={isConnected} currentSSID={currentSSID} setCurrentSSID={setCurrentSSID} setIsConnected={setIsConnected}/>
+          <QRCodeScannerComp toggleHome={toggleHome} toggleAbout={toggleAbout} toggleWifiList={toggleWifiList} password={password} setPassword={setPassword} isLocationEnabled={isLocationEnabled} isWifiEnabled={isWifiEnabled} setIsLoading={setIsLoading} setIpAddress={setIpAddress} showWebView = {showWebView} setShowWebView={setShowWebView} toggleCamera={toggleCamera} scanned={scanned} setScanned={setScanned} checkLocationStatus={checkLocationStatus} checkWifiStatus={checkWifiStatus} isConnected={isConnected} currentSSID={currentSSID} setCurrentSSID={setCurrentSSID} setIsConnected={setIsConnected}/>
         </>
-      ) : (
-        <HomeScreen toggleCamera={toggleCamera} />
+      ): wifiList ? (
+      <>
+        <WifiList isWifiEnabled={isWifiEnabled} isLocationEnabled={isLocationEnabled} toggleWifiList={toggleWifiList} setCurrentSSID={setCurrentSSID} setIsLoading={setIsLoading} setIsConnected={setIsConnected} setShowWebView={setShowWebView} setPassword={setPassword} password={password} setIpAddress={setIpAddress} ipAddress={ipAddress} />
+      </>
+      ) : about ? (
+        <Contact toggleWifiList={toggleWifiList} toggleHome={toggleHome}  toggleAbout={toggleAbout} />
+      ): (
+        <HomeScreen toggleCamera={toggleCamera} toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleAbout={toggleAbout} />
       )}
       {isLoading && <Spinner />}
     </View>
@@ -176,11 +202,11 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#007EA7',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-    borderRadius: 20,
+    // padding: 8,
+    // borderRadius: 20,
   },
 });
 

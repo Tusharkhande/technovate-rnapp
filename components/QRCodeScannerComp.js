@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { StyleSheet, Text, View, BackHandler, Alert, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, View, BackHandler, Alert, ToastAndroid, Image } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import Button from './Button';
 import wifi from 'react-native-android-wifi';
 import { NetworkInfo } from "react-native-network-info";
 import WifiManager from 'react-native-wifi-reborn';
+import BottomNavigation from './BottomNavigation';
+import logo from '../images/logo.png';
 
 
 
-export default function QRCodeScannerComp({isWifiEnabled, isLocationEnabled, setIsLoading,setIpAddress,showWebView, setShowWebView, toggleCamera, scanned, setScanned, checkLocationStatus, checkWifiStatus, isConnected, currentSSID, setCurrentSSID, setIsConnected }) {
+export default function QRCodeScannerComp({ toggleAbout, toggleHome, toggleWifiList, password, setPassword, isWifiEnabled, isLocationEnabled, setIsLoading, setIpAddress, showWebView, setShowWebView, toggleCamera, scanned, setScanned, checkLocationStatus, checkWifiStatus, isConnected, currentSSID, setCurrentSSID, setIsConnected }) {
     const [flash, setFlash] = useState(RNCamera.Constants.FlashMode.off);
     const [text, setText] = useState('Not yet scanned');
     const [ssid, setSsid] = useState('');
-    const [password, setPassword] = useState('');
     const [isHidden, setIsHidden] = useState('');
     const retake = require('../images/retake.png');
     const cancel = require('../images/cancel.png');
     const flashOn = require('../images/flash.png');
     const flashOff = require('../images/flash-off.png');
-
+    const wifion = require('../images/wifion.png');
     const openWV = () => {
         NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
             console.log(defaultGateway);
@@ -29,8 +30,8 @@ export default function QRCodeScannerComp({isWifiEnabled, isLocationEnabled, set
     };
 
     const handleBackButton = () => {
-        toggleCamera(); 
-        return true; 
+        toggleCamera();
+        return true;
     };
 
     useEffect(() => {
@@ -227,6 +228,9 @@ export default function QRCodeScannerComp({isWifiEnabled, isLocationEnabled, set
 
     return (
         <>
+            <View style={styles.header}>
+                <Image style={styles.logo} source={logo} />
+            </View>
             <View style={styles.barcodebox}>
                 <QRCodeScanner
                     onRead={handleBarCodeScanned}
@@ -259,19 +263,24 @@ export default function QRCodeScannerComp({isWifiEnabled, isLocationEnabled, set
                     onPress={toggleCamera}
                 />
             </View>
+            <View style={styles.bottom}>
+                <BottomNavigation toggleCamera={toggleCamera} toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleAbout={toggleAbout} />
+            </View>
+
         </>
     );
 }
 
 const styles = StyleSheet.create({
     barcodebox: {
+
         alignItems: 'center',
         justifyContent: 'center',
         height: 300,
         width: 300,
         overflow: 'hidden',
         borderRadius: 30,
-        backgroundColor: 'tomato',
+        backgroundColor: '#CCDBDC',
     },
     flashButtonContainer: {
         position: 'absolute',
@@ -290,8 +299,26 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     buttons: {
-        marginTop: 5,
-        backgroundColor: '#000',
-        borderRadius: 20,
+        margin: 5,
+        backgroundColor: '#003249',
+        borderRadius: 10,
+        padding: 10,
+    },
+    bottom: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        // marginBottom: 20,
+    },
+    header: {
+        flexDirection: 'row',
+        marginBottom: 100,
+        backgroundColor: '#003249',
+        height: 100,
+        paddingHorizontal: 200,
+    },
+    logo: {
+        width: 100,
+        height: 100,
+        marginRight: 350,
     },
 });
