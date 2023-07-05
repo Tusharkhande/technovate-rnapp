@@ -4,7 +4,7 @@ import { StyleSheet, View, Image } from 'react-native';
 export default function Spinner() {
   return (
     <View style={styles.spinnercontainer}>
-      <Image source={require('./spinner.gif')} style={styles.spinner} />
+      <Image source={require('./spinner3.gif')} style={styles.spinner} />
     </View>
   );
 }

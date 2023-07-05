@@ -8,7 +8,7 @@ import Header from './Header';
 import BottomNavigation from './BottomNavigation';
 
 
-const WifiList = ({ toggleAbout, toggleHome,toggleWifiList, setShowWebView, setPassword, password, setIpAddress, isWifiEnabled, isLocationEnabled, setIsConnected, setCurrentSSID, setIsLoading }) => {
+const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, setPassword, password, setIpAddress, isWifiEnabled, isLocationEnabled, setIsConnected, setCurrentSSID, setIsLoading }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedWifi, setSelectedWifi] = useState(null);
   // const [password, setPassword] = useState('');
@@ -34,7 +34,6 @@ const WifiList = ({ toggleAbout, toggleHome,toggleWifiList, setShowWebView, setP
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);
 
-    // Clean up the event listener when the component unmounts
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
     };
@@ -129,7 +128,7 @@ const WifiList = ({ toggleAbout, toggleHome,toggleWifiList, setShowWebView, setP
 
   return (
     <>
-      <Header />
+      <Header children='Wifi List'/>
       <View style={styles.container1}>
         <TouchableOpacity style={styles.touch} onPress={() => loadWifiList()}>
           <Text style={styles.text}>Load Wifi List</Text>
@@ -167,7 +166,7 @@ const WifiList = ({ toggleAbout, toggleHome,toggleWifiList, setShowWebView, setP
 
       </View>
       <View style={styles.bottom}>
-        <BottomNavigation  toggleWifiList={toggleWifiList} toggleHome={toggleWifiList} toggleAbout={toggleAbout} />
+        <BottomNavigation  toggleWifiList={toggleWifiList} toggleHome={toggleWifiList} toggleContact={toggleContact} />
       </View>
     </>
   );

@@ -7,11 +7,9 @@ import wifi from 'react-native-android-wifi';
 import { NetworkInfo } from "react-native-network-info";
 import WifiManager from 'react-native-wifi-reborn';
 import BottomNavigation from './BottomNavigation';
-import logo from '../images/logo.png';
+import Header from './Header';
 
-
-
-export default function QRCodeScannerComp({ toggleAbout, toggleHome, toggleWifiList, password, setPassword, isWifiEnabled, isLocationEnabled, setIsLoading, setIpAddress, showWebView, setShowWebView, toggleCamera, scanned, setScanned, checkLocationStatus, checkWifiStatus, isConnected, currentSSID, setCurrentSSID, setIsConnected }) {
+export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWifiList, password, setPassword, isWifiEnabled, isLocationEnabled, setIsLoading, setIpAddress, showWebView, setShowWebView, toggleCamera, scanned, setScanned, checkLocationStatus, checkWifiStatus, isConnected, currentSSID, setCurrentSSID, setIsConnected }) {
     const [flash, setFlash] = useState(RNCamera.Constants.FlashMode.off);
     const [text, setText] = useState('Not yet scanned');
     const [ssid, setSsid] = useState('');
@@ -107,6 +105,7 @@ export default function QRCodeScannerComp({ toggleAbout, toggleHome, toggleWifiL
                 () => {
                     console.log("Connection failed!");
                     console.log("wifi is not in range");
+                    setScanned(false);
                     Alert.alert(
                         'Error',
                         getErrorMessage(),
@@ -200,7 +199,7 @@ export default function QRCodeScannerComp({ toggleAbout, toggleHome, toggleWifiL
                         `SSID: ${ssid}\nPassword: ${password}`,
 
                         [
-                            { text: 'Cancel', },
+                            { text: 'Cancel', onPress:setScanned(false) },
                             { text: 'Connect', onPress: () => connectToWifi(ssid, password, isHidden) },
                         ],
                     );
@@ -228,9 +227,7 @@ export default function QRCodeScannerComp({ toggleAbout, toggleHome, toggleWifiL
 
     return (
         <>
-            <View style={styles.header}>
-                <Image style={styles.logo} source={logo} />
-            </View>
+            <Header children='Scanner'/>
             <View style={styles.barcodebox}>
                 <QRCodeScanner
                     onRead={handleBarCodeScanned}
@@ -264,7 +261,7 @@ export default function QRCodeScannerComp({ toggleAbout, toggleHome, toggleWifiL
                 />
             </View>
             <View style={styles.bottom}>
-                <BottomNavigation toggleCamera={toggleCamera} toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleAbout={toggleAbout} />
+                <BottomNavigation toggleCamera={toggleCamera} toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleContact={toggleContact} />
             </View>
 
         </>
@@ -308,17 +305,5 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         // marginBottom: 20,
-    },
-    header: {
-        flexDirection: 'row',
-        marginBottom: 100,
-        backgroundColor: '#003249',
-        height: 100,
-        paddingHorizontal: 200,
-    },
-    logo: {
-        width: 100,
-        height: 100,
-        marginRight: 350,
     },
 });

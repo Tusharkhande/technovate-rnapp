@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-export default function BottomNavigation({  toggleWifiList,toggleHome,toggleAbout }) {
+export default function BottomNavigation({  toggleWifiList,toggleHome,toggleContact }) {
     return (
         <>
             {/* <View style={styles.bottomContainer}> */}
@@ -14,7 +14,7 @@ export default function BottomNavigation({  toggleWifiList,toggleHome,toggleAbou
                     <Image style={styles.img} source={require('../images/home.png')} />
                         <Text style={styles.text}>Home</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.touch} onPress={toggleAbout} >
+                    <TouchableOpacity style={styles.touch} onPress={toggleContact} >
                     <Image style={styles.img} source={require('../images/support.png')} />
                         <Text style={styles.text}>Contact</Text>
                     </TouchableOpacity>

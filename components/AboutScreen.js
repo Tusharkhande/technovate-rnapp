@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, Image, BackHandler } from 'react-native';
 import logo from '../images/logo.png';
+import Header from './Header';
 
 const AboutScreen = ({toggleAbout}) => {
 
@@ -19,9 +20,7 @@ useEffect(() => {
 
   return (
     <>
-      <View style={styles.header}>
-        <Image style={styles.logo} source={logo} />
-      </View>
+      <Header toggleAbout={toggleAbout} children="About" />
       <View style={styles.container}>
 
         <Text style={styles.title}>About WiFi QR Code Scanner</Text>
@@ -44,12 +43,7 @@ useEffect(() => {
         <Text style={styles.feature}>
           - Current WiFi Details: Get instant access to the current WiFi SSID, allowing you to identify the network you're connected to at a glance.
         </Text>
-        <Text style={styles.feature}>
-          - Intuitive User Interface: Our app features a user-friendly interface that makes scanning QR codes and managing WiFi connections a breeze.
-        </Text>
-        <Text style={styles.conclusion}>
-          Whether you're connecting to a new WiFi network or sharing your network details with others, our WiFi QR Code Scanner app offers a convenient and efficient solution. Enjoy hassle-free WiFi connectivity with just a simple scan!
-        </Text>
+        
       </View>
     </>
   );
@@ -78,26 +72,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 4,
   },
-  conclusion: {
-    fontSize: 16,
-    marginTop: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    marginBottom: 20,
-    backgroundColor: '#003249',
-    // width: '100%',
-    height: 100,  
-    paddingHorizontal: 200,
-
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginRight: 350,
-},
 });
 
 export default AboutScreen;

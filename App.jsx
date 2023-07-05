@@ -30,6 +30,7 @@ const App = () => {
   const [wifiList, setWifiList] = useState(false);
   const [home, setHome] = useState(false);
   const [about, setAbout] = useState(false);
+  const [contact, setContact] = useState(false);
 
   const permission = async () => {
     try {
@@ -155,6 +156,12 @@ const App = () => {
   const toggleAbout = () => {
     setAbout(!about);
     setIsCameraOpen(false);
+    setContact(false);
+  };
+
+  const toggleContact = () => {
+    setContact(!contact);
+    setIsCameraOpen(false);
   };
 
   const handleWebViewError = () => {
@@ -183,16 +190,18 @@ const App = () => {
         />
       ) : isCameraOpen ? (
         <>
-          <QRCodeScannerComp toggleHome={toggleHome} toggleAbout={toggleAbout} toggleWifiList={toggleWifiList} password={password} setPassword={setPassword} isLocationEnabled={isLocationEnabled} isWifiEnabled={isWifiEnabled} setIsLoading={setIsLoading} setIpAddress={setIpAddress} showWebView = {showWebView} setShowWebView={setShowWebView} toggleCamera={toggleCamera} scanned={scanned} setScanned={setScanned} checkLocationStatus={checkLocationStatus} checkWifiStatus={checkWifiStatus} isConnected={isConnected} currentSSID={currentSSID} setCurrentSSID={setCurrentSSID} setIsConnected={setIsConnected}/>
+          <QRCodeScannerComp toggleAbout={toggleAbout} toggleHome={toggleHome} toggleContact={toggleContact} toggleWifiList={toggleWifiList} password={password} setPassword={setPassword} isLocationEnabled={isLocationEnabled} isWifiEnabled={isWifiEnabled} setIsLoading={setIsLoading} setIpAddress={setIpAddress} showWebView = {showWebView} setShowWebView={setShowWebView} toggleCamera={toggleCamera} scanned={scanned} setScanned={setScanned} checkLocationStatus={checkLocationStatus} checkWifiStatus={checkWifiStatus} isConnected={isConnected} currentSSID={currentSSID} setCurrentSSID={setCurrentSSID} setIsConnected={setIsConnected}/>
         </>
       ): wifiList ? (
       <>
-        <WifiList isWifiEnabled={isWifiEnabled} isLocationEnabled={isLocationEnabled} toggleWifiList={toggleWifiList} setCurrentSSID={setCurrentSSID} setIsLoading={setIsLoading} setIsConnected={setIsConnected} setShowWebView={setShowWebView} setPassword={setPassword} password={password} setIpAddress={setIpAddress} ipAddress={ipAddress} />
+        <WifiList toggleAbout={toggleAbout} isWifiEnabled={isWifiEnabled} isLocationEnabled={isLocationEnabled} toggleWifiList={toggleWifiList} setCurrentSSID={setCurrentSSID} setIsLoading={setIsLoading} setIsConnected={setIsConnected} setShowWebView={setShowWebView} setPassword={setPassword} password={password} setIpAddress={setIpAddress} ipAddress={ipAddress} />
       </>
+      ) : contact ? (
+        <Contact toggleWifiList={toggleWifiList} toggleHome={toggleHome}  toggleContact={toggleContact} />
       ) : about ? (
-        <Contact toggleWifiList={toggleWifiList} toggleHome={toggleHome}  toggleAbout={toggleAbout} />
+        <AboutScreen toggleAbout={toggleAbout} />
       ): (
-        <HomeScreen toggleCamera={toggleCamera} toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleAbout={toggleAbout} />
+        <HomeScreen toggleAbout={toggleAbout} toggleCamera={toggleCamera} toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleContact={toggleContact} />
       )}
       {isLoading && <Spinner />}
     </View>

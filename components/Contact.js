@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, Text, Linking, StyleSheet, TouchableOpacity, Image, BackHandler } from 'react-native';
-import logo from '../images/logo.png';
 import BottomNavigation from './BottomNavigation';
-const ContactButtons = ({ toggleWifiList,toggleHome,toggleAbout }) => {
+import Header from './Header';
+const Contact = ({ toggleWifiList,toggleHome,toggleContact }) => {
 
     const handleBackButton = () => {
-        toggleAbout();
+        toggleContact();
         return true;
     };
 
@@ -32,13 +32,8 @@ const ContactButtons = ({ toggleWifiList,toggleHome,toggleAbout }) => {
 
     return (
         <>
-            <View style={styles.header}>
-                <Image style={styles.logo} source={logo} />
-            </View>
+            <Header children={'Contact Us'} />
             <View style={styles.container}>
-                <Text style={styles.text}>
-                    Contact Us
-                </Text>
                 <TouchableOpacity style={styles.button} onPress={handleMailButtonPress}>
                     <Image source={require('../images/mail.png')} style={styles.buttonImage} />
                     <Text style={styles.buttonText}>Mail</Text>
@@ -55,7 +50,7 @@ const ContactButtons = ({ toggleWifiList,toggleHome,toggleAbout }) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.bottom}>
-                <BottomNavigation  toggleWifiList={toggleWifiList} toggleHome={toggleAbout} toggleAbout={toggleAbout} />
+                <BottomNavigation  toggleWifiList={toggleWifiList} toggleHome={toggleContact} toggleContact={toggleContact} />
             </View>
         </>
     );
@@ -70,6 +65,8 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginBottom: 50,
         width: '100%',
+        backgroundColor: '#007EA7',
+        zIndex: -1,
 
     },
     button: {
@@ -84,7 +81,7 @@ const styles = StyleSheet.create({
     buttonImage: {
         width: 24,
         height: 24,
-        marginRight: 10,
+        margin: 10,
     },
     buttonText: {
         color: 'white',
@@ -92,27 +89,6 @@ const styles = StyleSheet.create({
         fontWeight:'normal',
         margin: 10,
     },
-    header: {
-        flexDirection: 'row',
-        marginBottom: 0,
-        marginTop: 0,
-        backgroundColor: '#003249',
-        height: 100,
-        // paddingHorizontal: 200,
-    },
-    logo: {
-        width: 100,
-        height: 100,
-        marginRight: 350,
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 30,
-        marginLeft: 20,
-        color: '#fff',
-    },
-
 });
 
-export default ContactButtons;
+export default Contact;
