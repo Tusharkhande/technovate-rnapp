@@ -4,9 +4,11 @@ import { View, StyleSheet, ActivityIndicator, BackHandler,Image } from 'react-na
 import Button from './Button';
 
 
-export default function CustomWebView({ ipAddress, isLoading, handleLoadStart, handleLoadEnd, handleWebViewError, toggleWebView }) {
+export default function CustomWebView({ ipAddress, isLoading, handleLoadStart, handleLoadEnd, toggleWebView }) {
   const [canGoBack, setCanGoBack] = useState(false);
+  const [webViewError, setWebViewError] = useState(true);
   const back2 = require('../images/back2.png');
+  const webViewRef = React.useRef(null);
 
   const handleBackPress = () => {
     toggleWebView();
@@ -20,6 +22,10 @@ export default function CustomWebView({ ipAddress, isLoading, handleLoadStart, h
     };
   }, []);
 
+  const handleWebViewError = () => {
+    setWebViewError(true);
+  };
+
   return (
     <View style={styles.webviewContainer}>
       {isLoading && (
@@ -32,6 +38,7 @@ export default function CustomWebView({ ipAddress, isLoading, handleLoadStart, h
         source={
           { uri: ipAddress }
         }
+        ref={webViewRef}
         style={styles.webview}
         cacheEnabled={true}
         cacheMode="LOAD_DEFAULT"
@@ -45,6 +52,20 @@ export default function CustomWebView({ ipAddress, isLoading, handleLoadStart, h
         onLoadStart={handleLoadStart}
         onLoadEnd={handleLoadEnd}
         onError={handleWebViewError}
+        injectedJavaScript={`(function() {
+          if (document.getElementById('error-message') === null) {
+            var errorDiv = document.createElement('div');
+            errorDiv.id = 'error-message';
+            errorDiv.style.backgroundColor = 'blue';
+            errorDiv.style.color = 'white';
+            errorDiv.style.padding = '10px';
+            errorDiv.style.textAlign = 'center';
+            errorDiv.innerText = 'Error loading the web page';
+      
+            document.body.appendChild(errorDiv);
+          }
+        })();`}
+        javaScriptEnabled={true}
       />
 
       <View style={styles.buttons}>

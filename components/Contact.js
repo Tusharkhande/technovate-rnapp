@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { View, Text, Linking, StyleSheet, TouchableOpacity, Image, BackHandler } from 'react-native';
 import BottomNavigation from './BottomNavigation';
 import Header from './Header';
-const Contact = ({ toggleWifiList,toggleHome,toggleContact }) => {
+const Contact = ({ toggleWifiList,toggleHome,toggleContact, setContact }) => {
 
     const handleBackButton = () => {
-        toggleContact();
+        setContact(false);
         return true;
     };
 
@@ -50,7 +50,7 @@ const Contact = ({ toggleWifiList,toggleHome,toggleContact }) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.bottom}>
-                <BottomNavigation  toggleWifiList={toggleWifiList} toggleHome={toggleContact} toggleContact={toggleContact} />
+                <BottomNavigation  toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleContact={toggleContact} />
             </View>
         </>
     );

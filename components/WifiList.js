@@ -8,9 +8,9 @@ import Header from './Header';
 import BottomNavigation from './BottomNavigation';
 
 
-const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, setPassword, password, setIpAddress, isWifiEnabled, isLocationEnabled, setIsConnected, setCurrentSSID, setIsLoading }) => {
+const WifiList = ({setModalVisible1, setScanned, currentSSID, isConnected, toggleContact, toggleHome, setWifiList, toggleWifiList, setShowWebView, setPassword, password, setIpAddress, isWifiEnabled, isLocationEnabled, setIsConnected, setCurrentSSID, setIsLoading }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedWifi, setSelectedWifi] = useState(null);
+  const [selectedWifi, setSelectedWifi] = useState("");
   // const [password, setPassword] = useState('');
 
 
@@ -27,7 +27,7 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
   }
 
   const handleBackButton = () => {
-    toggleWifiList();
+    setWifiList(false);
     return true;
   };
 
@@ -48,7 +48,13 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
         console.log(parsedWifiArray);
         setWifiArray(parsedWifiArray);
         if (parsedWifiArray.length === 0) {
-          Alert.alert('No wifi connections found!');
+          Alert.alert(
+            'Error',
+            getErrorMessage(),
+            [
+              { text: 'OK', onPress: () => { setIsLoading(false); } }
+            ],
+          );
         }
       },
       error => {
@@ -57,8 +63,20 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
     );
   };
 
+    const disconnectFromWifi = () => {
+      wifi.disconnect();
+      const disconnect = WifiManager.disconnect();
+      if (disconnect) {
+          ToastAndroid.show('Disconnected successfully', ToastAndroid.SHORT);
+      } else {
+          ToastAndroid.show('Error in disconnecting', ToastAndroid.SHORT);
+      }
+      setIsConnected(false);
+  };
+
   const ifConnected = () => {
     setIsConnected(true);
+    setIsLoading(true);
     setModalVisible(false);
     setTimeout(() => {
       NetworkInfo.getGatewayIPAddress().then((defaultGateway) => {
@@ -66,7 +84,8 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
         setIpAddress(defaultGateway);
       });
     }, 1500);
-    setShowWebView(true);
+    // setShowWebView(true);
+    setModalVisible1(true);
     console.log("Connected successfully");
     setIsLoading(false);
     setTimeout(() => {
@@ -83,9 +102,11 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
   };
 
 
-
   const connectToWifi = async () => {
     try {
+      wifi.isRemoveWifiNetwork(selectedWifi, (isRemoved) => {
+        console.log("Forgetting the wifi device - " + selectedWifi);
+      });
       if (!selectedWifi || !password) {
         console.log(selectedWifi, password);
         console.log('SSID or password is null');
@@ -102,18 +123,13 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
         },
         () => {
           console.log("Connection failed!");
-          console.log("wifi is not in range");
+          console.log("Wifi is not in range");
           Alert.alert(
             'Error',
             getErrorMessage(),
             [
               { text: 'OK', onPress: () => { setIsLoading(false); } }
             ],
-            {
-              titleStyle: { fontSize: 20, fontWeight: 'bold', color: 'red' },
-              containerStyle: { backgroundColor: '#FFCDD2' },
-              contentContainerStyle: { justifyContent: 'center', alignItems: 'center' },
-            }
           );
         }
       );
@@ -125,10 +141,59 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
     }
   };
 
+  // const handleConnect = () => {
+  //   if (isConnected && selectedWifi === currentSSID) {
+  //     Alert.alert(
+  //       'Already Connected',
+  //       `You are already connected to ${currentSSID}`,
+  //       [
+  //         { text: 'Cancel', },
+  //         { text: 'Proceed', onPress: () => openWV() },
+  //       ],
+  //     );
+  //   }
+  //   else if (isConnected && selectedWifi !== currentSSID) {
+  //     console.log("connected");
+  //     Alert.alert(
+  //       'Already Connected to another network',
+  //       `${currentSSID}`,
+  //       [
+  //         { text: 'Cancel', },
+  //         { text: 'Disconnect', onPress: () => disconnectFromWifi() },
+  //       ],
+  //     );
+  //   }
+  //   if (!isConnected) {
+  //     setModalVisible(true);
+  //   }
+  // }
+
+
+
+  useEffect(() => {
+    WifiManager.getCurrentWifiSSID().then(
+      currSsid => {
+        console.log("Your current connected wifi SSID is " + currSsid);
+        setCurrentSSID(currSsid);
+      },
+      () => {
+        console.log("Cannot get current SSID!");
+      }
+    );
+    wifi.connectionStatus((isConnected) => {
+      if (isConnected) {
+        setIsConnected(true);
+        console.log("is connected");
+      } else {
+        console.log("is not connected");
+      }
+    });
+  }, []);
+
 
   return (
     <>
-      <Header children='Wifi List'/>
+      <Header children='Wifi List' />
       <View style={styles.container1}>
         <TouchableOpacity style={styles.touch} onPress={() => loadWifiList()}>
           <Text style={styles.text}>Load Wifi List</Text>
@@ -141,6 +206,7 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
               <Text style={fontSize = 24}>{wf.SSID}  </Text>
               <Button title="Connect" onPress={() => {
                 setSelectedWifi(wf.SSID);
+                console.log(selectedWifi);
                 setModalVisible(true);
               }} />
             </View>
@@ -166,7 +232,7 @@ const WifiList = ({ toggleContact, toggleHome,toggleWifiList, setShowWebView, se
 
       </View>
       <View style={styles.bottom}>
-        <BottomNavigation  toggleWifiList={toggleWifiList} toggleHome={toggleWifiList} toggleContact={toggleContact} />
+        <BottomNavigation toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleContact={toggleContact} />
       </View>
     </>
   );

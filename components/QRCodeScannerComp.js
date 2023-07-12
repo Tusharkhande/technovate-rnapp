@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { StyleSheet, Text, View, BackHandler, Alert, ToastAndroid, Image } from 'react-native';
+import { StyleSheet, Text, View, BackHandler, Alert, ToastAndroid, TextInput, Modal } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import Button from './Button';
 import wifi from 'react-native-android-wifi';
@@ -9,7 +9,7 @@ import WifiManager from 'react-native-wifi-reborn';
 import BottomNavigation from './BottomNavigation';
 import Header from './Header';
 
-export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWifiList, password, setPassword, isWifiEnabled, isLocationEnabled, setIsLoading, setIpAddress, showWebView, setShowWebView, toggleCamera, scanned, setScanned, checkLocationStatus, checkWifiStatus, isConnected, currentSSID, setCurrentSSID, setIsConnected }) {
+export default function QRCodeScannerComp({ modalVisible1, setModalVisible1, toggleContact, toggleHome, toggleWifiList, password, setPassword, isWifiEnabled, isLocationEnabled, setIsLoading, setIpAddress, showWebView, setShowWebView, toggleCamera, scanned, setScanned, checkLocationStatus, checkWifiStatus, isConnected, currentSSID, setCurrentSSID, setIsConnected }) {
     const [flash, setFlash] = useState(RNCamera.Constants.FlashMode.off);
     const [text, setText] = useState('Not yet scanned');
     const [ssid, setSsid] = useState('');
@@ -19,13 +19,20 @@ export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWif
     const flashOn = require('../images/flash.png');
     const flashOff = require('../images/flash-off.png');
     const wifion = require('../images/wifion.png');
-    const openWV = () => {
-        NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
-            console.log(defaultGateway);
-            setIpAddress(defaultGateway);
-        });
-        setShowWebView(true);
-    };
+    // const [modalVisible1, setModalVisible1] = useState(false);
+
+    // const openWV = () => {
+    //     NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
+    //         console.log(defaultGateway);
+    //         setIpAddress(defaultGateway);
+    //     });
+    //     setShowWebView(true);
+    // };
+    // const newIP = () => {
+    //     setShowWebView(true);
+    //     // setIsLoading(true);
+    //     setModalVisible1(false);
+    // };
 
     const handleBackButton = () => {
         toggleCamera();
@@ -72,7 +79,8 @@ export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWif
                 setIpAddress(defaultGateway);
             });
         }, 1500);
-        setShowWebView(true);
+        // setShowWebView(true);
+        setModalVisible1(true);
         console.log("Connected successfully");
         setIsLoading(false);
         setTimeout(() => {
@@ -173,14 +181,15 @@ export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWif
                 }
 
                 if (isConnected && ssid === currentSSID) {
-                    Alert.alert(
-                        'Already Connected',
-                        `You are already connected to ${currentSSID}`,
-                        [
-                            { text: 'Cancel', },
-                            { text: 'Proceed', onPress: () => openWV() },
-                        ],
-                    );
+                    setModalVisible1(true);
+                    // Alert.alert(
+                    //     'Already Connected',
+                    //     `You are already connected to ${currentSSID}`,
+                    //     [
+                    //         { text: 'Cancel', },
+                    //         { text: 'Proceed', onPress: () => openWV() },
+                    //     ],
+                    // );
                 }
                 else if (isConnected && ssid !== currentSSID) {
                     console.log("connected");
@@ -199,7 +208,7 @@ export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWif
                         `SSID: ${ssid}\nPassword: ${password}`,
 
                         [
-                            { text: 'Cancel', onPress:setScanned(false) },
+                            { text: 'Cancel', onPress: setScanned(false) },
                             { text: 'Connect', onPress: () => connectToWifi(ssid, password, isHidden) },
                         ],
                     );
@@ -227,7 +236,7 @@ export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWif
 
     return (
         <>
-            <Header children='Scanner'/>
+            <Header children='Scanner' />
             <View style={styles.barcodebox}>
                 <QRCodeScanner
                     onRead={handleBarCodeScanned}
@@ -263,6 +272,7 @@ export default function QRCodeScannerComp({ toggleContact, toggleHome, toggleWif
             <View style={styles.bottom}>
                 <BottomNavigation toggleCamera={toggleCamera} toggleWifiList={toggleWifiList} toggleHome={toggleHome} toggleContact={toggleContact} />
             </View>
+            
 
         </>
     );
@@ -306,4 +316,50 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         // marginBottom: 20,
     },
+    // modalContainer: {
+    //     flex: 1,
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     width: '100%',
+    //     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Transparent background
+    // },
+    // modalContent: {
+    //     backgroundColor: '#007EA7',
+    //     width: '80%',
+    //     padding: 16,
+    //     borderRadius: 8,
+    //     textAlign: 'center',
+    //     flexDirection: 'column',
+    //     justifyContent: 'center',
+    // },
+    // modalText: {
+    //     fontSize: 22,
+    //     // textAlign: 'center',
+    //     fontWeight: 'bold',
+    //     marginBottom: 16,
+    //     color: '#000',
+    // },
+    // buttonContainer: {
+    //     flexDirection: 'row',
+    //     justifyContent: 'space-between',
+    //     backgroundColor: '#003249',
+    //     borderRadius: 8,
+    //     marginLeft: 60,
+    //     marginRight: 70,
+    // },
+    // input: {
+    //     width: 150,
+    //     height: 50,
+    //     borderColor: '#000',
+    //     borderWidth: 1,
+    //     marginBottom: 16,
+    //     paddingHorizontal: 8,
+    //     color: '#000',
+    // },
+    // dummy: {
+    //     width: 20,
+    //     // height: 50,
+    //     // borderColor: 'gray',
+    //     // borderWidth: 1,
+    // },
 });
